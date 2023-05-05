@@ -141,17 +141,20 @@ def url_submit(e: ControlEvent):
     questions.current.update_url(url)
 
 def main(page: Page):
-    def close(e: ControlEvent):
-        page.show_snack_bar(SnackBar(Text('正在关闭浏览器和程序，请稍等'), open= True))
-        page.update()
-        del page.webwjx
-        page.window_destroy()
+    def window_event(e: ControlEvent):
+        if e.data == 'close':
+            page.show_snack_bar(SnackBar(Text('正在关闭浏览器和程序，请稍等'), open= True))
+            page.update()
+            del page.webwjx
+            page.window_destroy()
+            
     page.title = '问卷星自动填写器 by shaoxi2010 (window edge)'
     page.window_height = 600
     page.window_width = 800
     page.window_resizable = False
     page.webwjx = Wenjuan()
     page.window_prevent_close = True
+    page.on_window_event = window_event
     page.add(
         Row(
             [
@@ -160,9 +163,8 @@ def main(page: Page):
                     hint_text='输入调查问卷表格地址',
                     autofocus= True,
                     on_submit=url_submit,
-                    width=700,
+                    width=750,
                 ),
-                IconButton('exit_to_app',on_click=close)
             ],
             alignment="right",
             height=50
